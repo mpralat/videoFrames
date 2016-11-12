@@ -5,11 +5,11 @@
 #include <glob.h>
 
 #define BOOST_NO_CXX11_SCOPED_ENUMS
+
 #include <boost/filesystem.hpp>
+
 #undef BOOST_NO_CXX11_SCOPED_ENUMS
 
-
-std::string main_directory = "/home/marta/Inne/videos/";
 
 namespace fs = boost::filesystem;
 
@@ -46,7 +46,14 @@ void saveFrames(std::string fileName, std::string outputDir) {
     capture.release();
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+    std::string main_directory;
+    if (argc > 1)
+        main_directory = argv[1];
+    else {
+        std::cout << "Please provide an input folder with avi files." << std::endl;
+        _exit(-1);
+    }
 
     fs::path input(main_directory);
 //    Iterating through directories.
