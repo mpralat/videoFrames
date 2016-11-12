@@ -13,13 +13,9 @@
 
 namespace fs = boost::filesystem;
 
-std::string checkDirectory(std::string output_dir) {
-    std::vector<std::string> strings;
-    boost::split(strings, output_dir, boost::is_any_of("/"));
+void checkDirectory(std::string output_dir) {
     if (fs::create_directory(fs::path(output_dir)))
         std::cerr << "Directory created! " << output_dir << std::endl;
-    std::cout << strings[strings.size() - 3] << std::endl;
-    return strings[strings.size() - 3];
 }
 
 void saveFrames(std::string fileName, std::string outputDir) {
@@ -29,7 +25,7 @@ void saveFrames(std::string fileName, std::string outputDir) {
     if (!capture.isOpened())
         _exit(-1);
 
-    std::string mainName = checkDirectory(outputDir);
+    checkDirectory(outputDir);
 //    Getting a frame each two seconds (it's roughly 24fps).
     double frames = capture.get(CV_CAP_PROP_FRAME_COUNT);
     for (int i = 48; i < frames - 48; i += 240) {
@@ -40,14 +36,14 @@ void saveFrames(std::string fileName, std::string outputDir) {
             std::cout << "A wild problem with reading the frame appeared!" << std::endl;
             break;
         }
-        cv::imwrite(outputDir + mainName + "_" + fileName + "_" + std::to_string(i) + ".jpg", frame);
+        cv::imwrite(outputDir + fileName + "_" + std::to_string(i) + ".jpg", frame);
         frame.release();
     }
     capture.release();
 }
 
 int main(int argc, char *argv[]) {
-    std::string main_directory;
+    std::string main_directory = "/home/marta/Inne/videos/";
     if (argc > 1)
         main_directory = argv[1];
     else {
@@ -56,19 +52,21 @@ int main(int argc, char *argv[]) {
     }
 
     fs::path input(main_directory);
+    std::string outputDir = main_directory + "frames/";
 //    Iterating through directories.
     for (auto i = fs::directory_iterator(input); i != fs::directory_iterator(); i++) {
         if (is_directory(i->path())) {
             fs::current_path(i->path());
             glob_t globbuf;
-//            Getting all avi files from the dir.
-            int err = glob("*.avi", 0, NULL, &globbuf);
-            if (err == 0)
-                for (size_t j = 0; j < globbuf.gl_pathc; j++) {
-                    std::cout << globbuf.gl_pathv[j] << std::endl;
-                    std::string outputDir = i->path().string() + "/frames/";
-                    saveFrames(globbuf.gl_pathv[j], outputDir);
-                }
+            std::vector<const char *> extensions = {"*.avi", "*.mp4"};
+            for (auto ext : extensions){
+                int err = glob(ext, 0, NULL, &globbuf);
+                if (err == 0)
+                    for (size_t j = 0; j < globbuf.gl_pathc; j++) {
+                        std::cout << globbuf.gl_pathv[j] << std::endl;
+                        saveFrames(globbuf.gl_pathv[j], outputDir);
+                    }
+            }
 
             globfree(&globbuf);
 
