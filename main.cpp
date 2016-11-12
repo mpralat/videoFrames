@@ -5,12 +5,10 @@
 #include <glob.h>
 
 #define BOOST_NO_CXX11_SCOPED_ENUMS
-
 #include <boost/filesystem.hpp>
-
 #undef BOOST_NO_CXX11_SCOPED_ENUMS
 
-//std::string output_dir = "/home/marta/Inne/Sponge/frames/";
+
 std::string main_directory = "/home/marta/Inne/videos/";
 
 namespace fs = boost::filesystem;
