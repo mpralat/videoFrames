@@ -6,5 +6,5 @@ It only takes one argument - the path to your folder with input videos.
 There should be subdirectories with input avi files inside the main one. It saves one frame per two seconds (each 48th frame from the video).
 Frames are saved to "frames" dir created by the script, ready to be used in machine learning algorithms :3
 
-![Example frame](videoFrames/sponge4.avi_15408.jpg)
+![Example frame](https://github.com/mpralat/videoFrames/blob/master/sponge4.avi_15408.jpg)
 >Wooooo
